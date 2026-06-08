@@ -17,7 +17,7 @@ export default function Register() {
   setError('')
 
   try {
-   await axios.post('http://127.0.0.1:8000/register', { username, password })
+   await axios.post('http://13.206.88.177:8000/register', { username, password })
    navigate('/login?registered=true')
   } catch (err: any) {
    if(!err.response) {

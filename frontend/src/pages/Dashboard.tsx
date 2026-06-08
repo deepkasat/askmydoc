@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import axios from "axios";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 interface Message {
  role: 'user' | 'assistant'
@@ -27,7 +27,6 @@ export default function Dashboard({ setToken }: { setToken: (t: string | null) =
  const [ copySuccess, setCopySuccess ] = useState(false)
  const [ downloading, setDownloading ] = useState(false)
  const chatEndRef = useRef<HTMLDivElement>(null)
- const navigate = useNavigate()
  const location = useLocation()
  const justLoggedIn = new URLSearchParams(location.search).get('loggedIn') === 'true'
  const [ showLoginSuccess, setShowLoginSuccess ] = useState(justLoggedIn)
@@ -46,7 +45,7 @@ export default function Dashboard({ setToken }: { setToken: (t: string | null) =
  useEffect(() => {
   const fetchDocuments = async () => {
     try {
-      const res = await axios.get('http://127.0.0.1:8000/documents', { headers})
+      const res = await axios.get('http://13.206.88.177:8000/documents', { headers})
       setDocuments(res.data)
       if(res.data.length > 0) {
         setActiveDoc(res.data[0])
@@ -69,7 +68,7 @@ export default function Dashboard({ setToken }: { setToken: (t: string | null) =
   formData.append('file', file)
 
   try {
-   const res = await axios.post('http://127.0.0.1:8000/upload', formData, { headers})
+   const res = await axios.post('http://13.206.88.177:8000/upload', formData, { headers})
    const newDoc: Document = {
     document_id: res.data.document_id,
     filename: res.data.filename,
@@ -99,7 +98,7 @@ export default function Dashboard({ setToken }: { setToken: (t: string | null) =
   setChatLoading(true)
 
   try {
-   const res = await axios.post('http://127.0.0.1:8000/chat', { message: userMessage, document_id: activeDoc.document_id},
+   const res = await axios.post('http://13.206.88.177:8000/chat', { message: userMessage, document_id: activeDoc.document_id},
     { headers}
    )
    setConversations(prev => ({
@@ -123,18 +122,23 @@ export default function Dashboard({ setToken }: { setToken: (t: string | null) =
  }
 
  const handleCopySummary = () => {
-  if(!activeDoc) return
-  navigator.clipboard.writeText(activeDoc.summary)
+  if (!activeDoc) return
+  const textarea = document.createElement('textarea')
+  textarea.value = activeDoc.summary
+  document.body.appendChild(textarea)
+  textarea.select()
+  document.execCommand('copy')
+  document.body.removeChild(textarea)
   setCopySuccess(true)
   setTimeout(() => setCopySuccess(false), 2000)
- }
+}
 
  const handleDownloadSummary = async () => {
   if(!activeDoc) return
   setDownloading(true)
   try {
     const res = await axios.get(
-      `http://127.0.0.1:8000/download-summary/${activeDoc.document_id}`, { headers, responseType: 'blob'}
+      `http://13.206.88.177:8000/download-summary/${activeDoc.document_id}`, { headers, responseType: 'blob'}
     )
     const url = window.URL.createObjectURL(new Blob([res.data]))
     const link = document.createElement('a')

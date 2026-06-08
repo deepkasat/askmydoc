@@ -25,7 +25,7 @@ export default function Login({ setToken }: { setToken: (t: string) => void }) {
   setLoading(true)
   setError('')
   try {
-   const res = await axios.post('http://127.0.0.1:8000/login', { username, password })
+   const res = await axios.post('http://13.206.88.177:8000/login', { username, password })
    localStorage.setItem('token', res.data.access_token)
    setToken(res.data.access_token)
    navigate('/dashboard?loggedIn=true')
