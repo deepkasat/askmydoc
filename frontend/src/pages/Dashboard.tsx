@@ -45,7 +45,7 @@ export default function Dashboard({ setToken }: { setToken: (t: string | null) =
  useEffect(() => {
   const fetchDocuments = async () => {
     try {
-      const res = await axios.get('http://13.206.88.177:8000/documents', { headers})
+      const res = await axios.get('https://13.206.88.177.nip.io/documents', { headers})
       setDocuments(res.data)
       if(res.data.length > 0) {
         setActiveDoc(res.data[0])
@@ -68,7 +68,7 @@ export default function Dashboard({ setToken }: { setToken: (t: string | null) =
   formData.append('file', file)
 
   try {
-   const res = await axios.post('http://13.206.88.177:8000/upload', formData, { headers})
+   const res = await axios.post('https://13.206.88.177.nip.io/upload', formData, { headers})
    const newDoc: Document = {
     document_id: res.data.document_id,
     filename: res.data.filename,
@@ -98,7 +98,7 @@ export default function Dashboard({ setToken }: { setToken: (t: string | null) =
   setChatLoading(true)
 
   try {
-   const res = await axios.post('http://13.206.88.177:8000/chat', { message: userMessage, document_id: activeDoc.document_id},
+   const res = await axios.post('https://13.206.88.177.nip.io/chat', { message: userMessage, document_id: activeDoc.document_id},
     { headers}
    )
    setConversations(prev => ({
@@ -138,7 +138,7 @@ export default function Dashboard({ setToken }: { setToken: (t: string | null) =
   setDownloading(true)
   try {
     const res = await axios.get(
-      `http://13.206.88.177:8000/download-summary/${activeDoc.document_id}`, { headers, responseType: 'blob'}
+      `https://13.206.88.177.nip.io/download-summary/${activeDoc.document_id}`, { headers, responseType: 'blob'}
     )
     const url = window.URL.createObjectURL(new Blob([res.data]))
     const link = document.createElement('a')
